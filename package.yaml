@@ -1,0 +1,25 @@
+descriptor-schema-version: "2.7"
+
+info:
+  name: "iox-app"
+  description: "Docker app for the Parani dev"
+  version: "1.0"
+  author-link: "https://github.com/harthomp"
+  author-name: "Harrison TB"
+
+app:
+  cpuarch: "aarch64"
+  type: "docker"
+  resources:
+    profile: c1.tiny
+    devices:
+      -
+        label: "/dev/ttySerial"
+        type: serial
+        usage: "Serial async0"
+    network:
+      -
+        interface-name: "eth0"
+  startup:
+    rootfs: rootfs.tar
+    target: ["python3", "scan.py"]
