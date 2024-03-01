@@ -1,4 +1,4 @@
-descriptor-schema-version: "2.7"
+descriptor-schema-version: "2.6"
 
 info:
   name: "iox-app"
@@ -14,9 +14,9 @@ app:
     profile: c1.tiny
     devices:
       -
-        label: "/dev/ttySerial"
+        label: IR_SERIAL
         type: serial
-        usage: "Serial async0"
+        usage: "async0"
     network:
       -
         interface-name: "eth0"

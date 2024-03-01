@@ -1,27 +1,64 @@
 import parani
+import os
+import logging
+import time
 
 if __name__ == "__main__":
     
-    x = parani.Parani_SD1000()
+    log_file_dir = "/tmp"
+    log_file_path = os.path.join(log_file_dir, "iox-serial-port.log")
 
-    x.bt_cancel()
+    logging.basicConfig(
+        filename = log_file_path,
+        level = logging.INFO,
+        format = '[%(asctime)s]{%(pathname)s:%(lineno)d}%(levelname)s- %(message)s',
+        datefmt = '%H:%M:%S'
+            )
 
-    print(x.response)
+    console = logging.StreamHandler()
+    console.setLevel(logging.DEBUG)
 
-    x.bt_inq()
+    formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+    console.setFormatter(formatter)
 
-    i = x.response
+    logging.getLogger('').addHandler(console)
+    logger = logging.getLogger(__name__)
 
-    print(i)
-
-    i = i.split(b"\r\n")
-
-    scan_list = []
-
-    for x in i:
-        if not x == b"":
-            scan_list.append(x)
+    logger.info('Starting app')
     
-    for record in scan_list:
-        print(record)
+    try:
+        x = parani.Parani_SD1000()
+    except:
+        logger.info('Can\'t open serial port')
+        exit(1)
+
+    while True:
+        x.bt_cancel()
+
+        print(x.response)
+        
+        logger.info("bt_cancel: " + str(x.response))
+
+        x.bt_inq()
+    
+        i = x.response
+    
+        logger.info("bt_inq: " + str(x.response))
+
+        print(i)
+        
+        time.sleep(3)
+
+        
+        # PARSER NOT NEEDED RIGHT NOW.
+        #i = i.split(b"\r\n")
+
+        #scan_list = []
+
+        #for x in i:
+        #    if not x == b"":
+        #        scan_list.append(x)
+    
+        #for record in scan_list:
+        #    print(record)
 

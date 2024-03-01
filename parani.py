@@ -1,4 +1,5 @@
 import serial
+import os
 import payloads # Contains encoded commands for scan execution
 
 # Class is self-contained and only requires calls to internal methods
@@ -6,8 +7,8 @@ class Parani_SD1000:
     def __init__(self):
         # Params for connection to device
         self.serial_line = serial.Serial(
-                port = "/dev/ttySerial",
-                baudrate = 57600,
+                port = os.getenv("IR_SERIAL", "/dev/ttySerial"), # Stolen from github.com/etychon/iox-ir1101-serial-port
+                baudrate = 9600,
                 write_timeout = None,
                 timeout = 5
                 )
