@@ -33,3 +33,6 @@ class Parani_SD1000:
     def bt_cancel(self):
         self.serial_line.write(payloads.BT_CANCEL)
         self.response = self.serial_line.read(1000)
+
+    def flush_buffer(self):
+        self.serial_line.flush()

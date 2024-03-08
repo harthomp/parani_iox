@@ -33,6 +33,10 @@ if __name__ == "__main__":
         exit(1)
 
     while True:
+        x.flush_buffer()
+        
+        logger.info("Flush occurred")
+
         x.bt_cancel()
 
         print(x.response)
