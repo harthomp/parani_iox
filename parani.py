@@ -8,9 +8,9 @@ class Parani_SD1000:
         # Params for connection to device
         self.serial_line = serial.Serial(
                 port = os.getenv("IR_SERIAL", "/dev/ttySerial"), # Stolen from github.com/etychon/iox-ir1101-serial-port
-                baudrate = 9600,
+                baudrate = 57600,
                 write_timeout = None,
-                timeout = 5
+                timeout = 30
                 )
         
         # Used for debugging purposes - stores byte stream
@@ -33,16 +33,3 @@ class Parani_SD1000:
     def bt_cancel(self):
         self.serial_line.write(payloads.BT_CANCEL)
         self.response = self.serial_line.read(1000)
-
-
-    # Below methods were created before the PoC was functioning. Left for implementors understanding alone
-
-    # Unnecessary for PoC, used during testing of device - was needed for bt_mode() method
-    #def atz(self):
-    #    self.serial_line.write(payloads.ATZ)
-    #    self.response = self.serial_line.read(1000)
-   
-    # Unnecessary for PoC, part of rabbithole exploration about device - thought modes (0-3) were preventing command execution   
-    #def bt_mode(self, mode: int):
-    #    self.serial_line.write(payloads.BT_MODE[mode])
-    #    self.response = self.serial_line.read(1000)
