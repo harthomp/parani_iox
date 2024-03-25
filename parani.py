@@ -1,6 +1,7 @@
 import serial
 import os
 import payloads # Contains encoded commands for scan execution
+from datetime import datetime, timezone
 
 # Class is self-contained and only requires calls to internal methods
 class Parani_SD1000:
@@ -10,12 +11,12 @@ class Parani_SD1000:
                 port = os.getenv("IR_SERIAL", "/dev/ttySerial"), # Stolen from github.com/etychon/iox-ir1101-serial-port
                 baudrate = 57600,
                 write_timeout = None,
-                timeout = 30
+                timeout = 0.1
                 )
         
         # Used for debugging purposes - stores byte stream
         self.response = None
-
+        self.response_tuples: list(tuple(str, datetime)) = []
 
     # 1000 bytes used for read param now as unsure of sizing reqs. 
 
@@ -36,3 +37,29 @@ class Parani_SD1000:
 
     def flush_buffer(self):
         self.serial_line.flush()
+
+    def ats_s4(self):
+        self.serial_line.write(payloads.ATS_S4)
+
+    def ats_s33(self):
+        self.serial_line.write(payloads.ATS_S33)
+
+    def set_s_registers(self):
+        self.ats_s4()
+        self.ats_s33()
+
+    def bt_inq_readline(self):
+        self.serial_line.write(payloads.BT_INQ)
+        
+        # Clear tuple list so doesn't compound over time
+        self.response_tuples.clear()
+        
+        x: str = None
+        while True:
+            x = self.serial_line.readline()
+            if x != b"OK\r\n": 
+                if x != b"\r\n" and x != b"" and x != b"ERROR\\r\\n" and x != b"ERROR\r\n":
+                    x = x.split(b",")
+                    self.response_tuples.append((x[0], datetime.now(timezone.utc)))
+            else:
+                break

@@ -32,6 +32,10 @@ if __name__ == "__main__":
         logger.info('Can\'t open serial port')
         exit(1)
 
+    x.set_s_registers()
+
+    logger.info("Set S registers")
+
     while True:
         x.flush_buffer()
         
@@ -43,16 +47,14 @@ if __name__ == "__main__":
         
         logger.info("bt_cancel: " + str(x.response))
 
-        x.bt_inq()
+        x.bt_inq_readline()
     
-        i = x.response
+        #i = x.response
     
-        logger.info("bt_inq: " + str(x.response))
+        for mac_addr, timestamp in x.response_tuples:
+            logger.info("bt_inq: " + str(mac_addr) + str(timestamp))
 
-        print(i)
-        
-        time.sleep(3)
-
+        #print(i)
         
         # PARSER NOT NEEDED RIGHT NOW.
         #i = i.split(b"\r\n")
