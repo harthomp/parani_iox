@@ -2,6 +2,7 @@ import serial
 import os
 import payloads # Contains encoded commands for scan execution
 from datetime import datetime, timezone
+import transmission
 
 # Class is self-contained and only requires calls to internal methods
 class Parani_SD1000:
@@ -13,10 +14,21 @@ class Parani_SD1000:
                 write_timeout = None,
                 timeout = 0.1
                 )
-        
+
         # Used for debugging purposes - stores byte stream
         self.response = None
         self.response_tuples: list(tuple(str, datetime)) = []
+
+        self.packet = transmission.IncomingMessageProtocol(
+                    signature = 0xEE,
+                    source_identifier_type = 60,
+                    has_ibeacon = 0,
+                    low_byte_asset_number = 0xFF,
+                    high_byte_asset_number = 0x00
+                    )
+
+
+
 
     # 1000 bytes used for read param now as unsure of sizing reqs. 
 
