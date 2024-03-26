@@ -92,3 +92,21 @@ class Parani_SD1000:
                     ten_year = tenths_time(timestamp.year - 2000),
                     year = oneths_time(timestamp.year - 2000)
                 )
+
+    def send_heartbeat_packet(self):
+        self.set_packet_parameters(b"            ", datetime.now(timezone.utc))
+        transmission.send_packet_v1(self.packet)
+
+    def send_imp_packets(self):
+        if not self.response_tuples:
+            #logger.info("NO BT ADDRS DETECTED")
+            print("TODO LOGGER")
+        else:
+            for mac_addr, timestamp in self.response_tuples:
+                #logger.info("BTINQ: " + str(mac_addr) + str(timestamp))
+            
+                self.set_packet_parameters(mac_addr, timestamp)
+
+                #logger.info("CRAFTED PACKET")
+    
+                transmission.send_packet_v1(self.packet)

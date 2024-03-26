@@ -19,8 +19,7 @@ def app_main(logger):
     while True:
 
         # Heartbeat packet
-        x.set_packet_parameters(b"            ", datetime.now(timezone.utc))
-        transmission.send_packet_v1(x.packet)
+        x.send_heartbeat_packet()
 
         x.flush_buffer()
         
@@ -34,14 +33,4 @@ def app_main(logger):
 
         x.bt_inq_readline()
     
-        if not x.response_tuples:
-            logger.info("NO BT ADDRS DETECTED")
-        else:
-            for mac_addr, timestamp in x.response_tuples:
-                logger.info("BTINQ: " + str(mac_addr) + str(timestamp))
-            
-                x.set_packet_parameters(mac_addr, timestamp)
-
-                logger.info("CRAFTED PACKET")
-    
-                transmission.send_packet_v1(x.packet)
+        x.send_imp_packets()
