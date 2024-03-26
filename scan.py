@@ -3,6 +3,7 @@ import os
 import logging
 import time
 import transmission
+from datetime import datetime, timezone
 
 if __name__ == "__main__":
     
@@ -38,6 +39,11 @@ if __name__ == "__main__":
     logger.info("Set S registers")
 
     while True:
+
+        # Heartbeat packet
+        x.set_packet_parameters(b"            ", datetime.now(timezone.utc))
+        transmission.send_packet_v1(x.packet)
+
         x.flush_buffer()
         
         logger.info("Flush occurred")
@@ -59,22 +65,5 @@ if __name__ == "__main__":
                 x.set_packet_parameters(mac_addr, timestamp)
 
                 logger.info("CRAFTED PACKET")
-
-                #packet = transmission.raw_packet(x.packet)
     
                 transmission.send_packet_v1(x.packet)
-
-        #print(i)
-        
-        # PARSER NOT NEEDED RIGHT NOW.
-        #i = i.split(b"\r\n")
-
-        #scan_list = []
-
-        #for x in i:
-        #    if not x == b"":
-        #        scan_list.append(x)
-    
-        #for record in scan_list:
-        #    print(record)
-
