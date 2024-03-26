@@ -43,28 +43,3 @@ def raw_packet(packet) -> bytes:
 def send_packet_v1(packet):
     packet_v1 = IP(dst="192.168.1.2", src = "172.16.1.1")/UDP(dport = 2000, sport = RandShort())/packet
     send(packet_v1, iface = "eth0")
-
-
-
-
-            #source_identifier = mac_addr,
-            #ten_seconds =  tenths_time(timestamp.second),
-            #seconds = oneths_time(timestamp.second),
-            #ten_minutes = tenths_time(timestamp.minute),
-            #minutes = oneths_time(timestamp.minute),
-            #ten_hour = tenths_time(timestamp.hour),
-            #hours = oneths_time(timestamp.hour),
-            #ten_date = tenths_time(timestamp.day),
-            #date = oneths_time(timestamp.day),
-            #ten_month = tenths_time(timestamp.month),
-            #month = oneths_time(timestamp.month),
-            #ten_year = tenths_time(timestamp.year - 2000),
-            #year = oneths_time(timestamp.year - 2000)
-            #)    
-    #print(packet.show())
-    
-    # Can also be done by appending to UDP()/IncomingMessageProtocolV1(signature = y, source_id_type = x, etc)
-    #packet_v1 = IP(dst="10.66.227.88", src = "123.123.123.123")/UDP(dport = 2000, sport = RandShort())/packet
-
-
-    #return raw(x)
