@@ -1,5 +1,5 @@
 from scapy.all import *
-from datetime import datetime, timezone
+import socket
 
 #https://scapy.readthedocs.io/en/latest/build_dissect.html
 class IncomingMessageProtocol(Packet):
@@ -14,7 +14,7 @@ class IncomingMessageProtocol(Packet):
         XBitField("padding1", 0, 1), 
         BitField("low_byte_asset_number", 0, 8),  # Used for the internal hardware asset value
         BitField("high_byte_asset_number", 0, 8), # Together range of 0 - 65535, i.e. low set to 0xFF and high to 0x00 would be asset num 255, 99% sure this is how it works. - True
-        StrLenField("source_identifier", None, max_length = 12), # Field for the MAC address payload
+        StrFixedLenField("source_identifier", b"            ", 12), # Field for the MAC address payload
         XBitField("padding2", 0, 1),
         
         # Fields relate to timestamping - ten_x relate to the tenths of that value
@@ -37,8 +37,15 @@ class IncomingMessageProtocol(Packet):
         BitField("year", 0, 4)
         ]
 
-def tenths_time(time: int): return (time // 10) % 10
-def oneths_time(time: int): return time % 10
+def raw_packet(packet) -> bytes:
+    return raw(packet)
+
+def send_packet_v1(packet):
+    packet_v1 = IP(dst="192.168.1.2", src = "172.16.1.1")/UDP(dport = 2000, sport = RandShort())/packet
+    send(packet_v1, iface = "eth0")
+
+
+
 
             #source_identifier = mac_addr,
             #ten_seconds =  tenths_time(timestamp.second),

@@ -2,6 +2,7 @@ import parani
 import os
 import logging
 import time
+import transmission
 
 if __name__ == "__main__":
     
@@ -45,14 +46,23 @@ if __name__ == "__main__":
 
         print(x.response)
         
-        logger.info("bt_cancel: " + str(x.response))
+        logger.info("BTCANCEL: " + str(x.response))
 
         x.bt_inq_readline()
     
-        #i = x.response
+        if not x.response_tuples:
+            logger.info("NO BT ADDRS DETECTED")
+        else:
+            for mac_addr, timestamp in x.response_tuples:
+                logger.info("BTINQ: " + str(mac_addr) + str(timestamp))
+            
+                x.set_packet_parameters(mac_addr, timestamp)
+
+                logger.info("CRAFTED PACKET")
+
+                #packet = transmission.raw_packet(x.packet)
     
-        for mac_addr, timestamp in x.response_tuples:
-            logger.info("bt_inq: " + str(mac_addr) + str(timestamp))
+                transmission.send_packet_v1(x.packet)
 
         #print(i)
         
