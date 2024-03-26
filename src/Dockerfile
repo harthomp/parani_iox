@@ -7,4 +7,4 @@ COPY requirements.txt .
 
 RUN apk add --no-cache python3 py3-pip && pip3 install -r requirements.txt
 
-ENTRYPOINT python3 scan.py
+ENTRYPOINT python3 main.py
