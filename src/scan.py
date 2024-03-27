@@ -1,6 +1,4 @@
 import parani
-import transmission
-from datetime import datetime, timezone
 
 def app_main(logger):
 
@@ -27,7 +25,7 @@ def app_main(logger):
 
         device.bt_cancel()
  
-        logger.info("BTCANCEL: " + str(x.response))
+        logger.info("BTCANCEL: " + str(device.response))
 
         device.bt_inq_readline()
     
