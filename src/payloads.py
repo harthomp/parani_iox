@@ -1,4 +1,4 @@
-from main import Config
+from conf import Config
 
 # Command list in Appendix B of below link
 # https://microtechnica.tv/support/manual/sd1000_man.pdf
