@@ -1,3 +1,5 @@
+from main import Config
+
 # Command list in Appendix B of below link
 # https://microtechnica.tv/support/manual/sd1000_man.pdf
  
@@ -14,8 +16,8 @@ BT_MODE = ["AT+BTMODE,0\r".encode("utf-8"),
 
 BT_CANCEL = "AT+BTCANCEL\r".encode("utf-8")
 
-ATS_S4 = "ATS4=0\r".encode("utf-8") # For getting the BT addr only
+ATS_S4 = "ATS4=0\r".encode("utf-8") # Gets the BT addr and leaves dev name
 
-ATS_S24 = "ATS24=xxxx\r".encode("utf-8") # Change xxxx to the amount of addrs to collect
+ATS_S24 = f"ATS24={Config.scan_amount}\r".encode("utf-8") # Change in main.Config.scan_amount for amount of addrs to collect
 
 ATS_S33 = "ATS33=15\r".encode("utf-8") # Change scan time to documented AddInsight time
