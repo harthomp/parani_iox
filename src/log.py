@@ -17,12 +17,13 @@ def file_system_logger():
     console = logging.StreamHandler()
     console.setLevel(logging.DEBUG)
 
-    formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+    formatter = logging.Formatter('%(levelname)-12s: %(name)-8s %(message)s')
     console.setFormatter(formatter)
 
     logging.getLogger('').addHandler(console)
     logger = logging.getLogger(__name__)
     
+    logger.info("LOG: init filesystem logger")
     return logger
 
 def syslog_logger():
@@ -35,10 +36,11 @@ def syslog_logger():
     console = SysLogHandler(address = (Config.syslog_server_ipaddr, 514))
     console.setLevel(logging.DEBUG)
 
-    formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+    formatter = logging.Formatter('%(levelname)-12s: %(name)-8s %(message)s')
     console.setFormatter(formatter)
 
     logging.getLogger('').addHandler(console)
     logger = logging.getLogger(__name__)
     
+    logger.info("LOG: init syslog logger")
     return logger

@@ -8,9 +8,8 @@ import transmission
 def tenths_time(time: int): return (time // 10) % 10
 def oneths_time(time: int): return time % 10
 
-# Class is self-contained and only requires calls to internal methods
 class Parani_SD1000:
-    def __init__(self):
+    def __init__(self, logger):
         # Params for connection to device
         self.serial_line = serial.Serial(
                 port = os.getenv("IR_SERIAL", "/dev/ttySerial"), # Stolen from github.com/etychon/iox-ir1101-serial-port
@@ -19,8 +18,12 @@ class Parani_SD1000:
                 timeout = 0.1
                 )
 
+        self.logger = logger
+
         # Used for debugging purposes - stores byte stream
         self.response = None
+        
+        # Stores list of tuple with captured MAC addr and timestamp
         self.response_tuples: list(tuple(str, datetime)) = []
 
         self.packet: transmission.IncomingMessageProtocol = None
@@ -32,28 +35,40 @@ class Parani_SD1000:
         self.serial_line.write(payloads.BT_INFO)
         self.response = self.serial_line.read(1000)
 
-    # Performs scanning functionality, left as default for now - refer to doc for possible S register change
+    # Performed scanning functionality - LEGACY REPLACED BY bt_inq_readline()
+    # Timestamping for records were not as accurate as possible.
     def bt_inq(self):
         self.serial_line.write(payloads.BT_INQ)
         self.response = self.serial_line.read(1000)
     
-    # Necessary for turning operational status of device from PENDING to STANDBY - can return ERROR or OK, just needs to run before executing bt_inq() method
+    # Necessary for turning operational status of device from PENDING to STANDBY - can return ERROR or OK, just needs to run before executing bt_inq_readline() method
     def bt_cancel(self):
         self.serial_line.write(payloads.BT_CANCEL)
         self.response = self.serial_line.read(1000)
+        self.logger.info(f"PARANI: bt_cancel() -> {str(self.response)}")
 
+    # Still not working - but fine due to the bt_cancel() read <- functions as flush
     def flush_buffer(self):
         self.serial_line.flush()
+        self.logger.info("PARANI: Flush occurred")
 
     def ats_s4(self):
         self.serial_line.write(payloads.ATS_S4)
+        self.logger.info("PARANI: Set S4 register")
+
+    def ats_s24(self):
+        self.serial_line.write(payloads.ATS_S24)
+        self.logger.info("PARANI: Set S24 register")
 
     def ats_s33(self):
         self.serial_line.write(payloads.ATS_S33)
+        self.logger.info("PARANI: Set S33 register")
 
+    # COULD INCLUDE assert STATEMENTS TO ENSURE SUCCESSFUL.
     def set_s_registers(self):
         self.ats_s4()
         self.ats_s33()
+        self.logger.info("PARANI: Success setting S4, S24, S33 registers")
 
     def bt_inq_readline(self):
         self.serial_line.write(payloads.BT_INQ)
@@ -92,21 +107,22 @@ class Parani_SD1000:
                     ten_year = tenths_time(timestamp.year - 2000),
                     year = oneths_time(timestamp.year - 2000)
                 )
+        self.logger.info(f"PARANI: Crafted packet w/ params ({str(mac_addr)} {str(timestamp)})")
 
     def send_heartbeat_packet(self):
         self.set_packet_parameters(b"            ", datetime.now(timezone.utc))
         transmission.send_packet_v1(self.packet)
+        self.logger.info("PARANI: Sent IncomingMessageProtocol heartbeat packet")
 
     def send_imp_packets(self):
         if not self.response_tuples:
-            #logger.info("NO BT ADDRS DETECTED")
-            print("TODO LOGGER")
+            self.logger.info("PARANI: No Bluetooth MAC addresses detected")
         else:
             for mac_addr, timestamp in self.response_tuples:
-                #logger.info("BTINQ: " + str(mac_addr) + str(timestamp))
+                self.logger.info(f"PARANI: bt_inq_readline() -> ({str(mac_addr)} {str(timestamp)})")
             
                 self.set_packet_parameters(mac_addr, timestamp)
-
-                #logger.info("CRAFTED PACKET")
     
                 transmission.send_packet_v1(self.packet)
+
+                self.logger.info("PARANI: Sent crafted packet")
