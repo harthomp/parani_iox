@@ -67,6 +67,7 @@ class Parani_SD1000:
     # COULD INCLUDE assert STATEMENTS TO ENSURE SUCCESSFUL.
     def set_s_registers(self):
         self.ats_s4()
+        self.ats_s24()
         self.ats_s33()
         self.logger.info("PARANI: Success setting S4, S24, S33 registers")
 
