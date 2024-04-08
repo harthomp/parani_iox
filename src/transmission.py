@@ -1,5 +1,4 @@
 from scapy.all import *
-import socket
 
 #https://scapy.readthedocs.io/en/latest/build_dissect.html
 class IncomingMessageProtocol(Packet):
