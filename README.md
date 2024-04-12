@@ -23,7 +23,7 @@ Parani DCE to IR1101 DTE
 | 8          | 7           | Brown               |
 | 9          | N/A         | N/A                 |
 
-## IR1101 Configuration SETUP, REQS, DHCP FOR DYNAMIC ADDRESSING, ETC
+## IR1101 Configuration
 
 ### Setting up IOx
 
