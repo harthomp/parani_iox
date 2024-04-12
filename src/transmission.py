@@ -1,4 +1,5 @@
 from scapy.all import *
+from conf import Config
 
 #https://scapy.readthedocs.io/en/latest/build_dissect.html
 class IncomingMessageProtocol(Packet):
@@ -40,5 +41,5 @@ def raw_packet(packet) -> bytes:
     return raw(packet)
 
 def send_packet_v1(packet):
-    packet_v1 = IP(dst="192.168.1.2", src = "172.16.1.1")/UDP(dport = 2000, sport = RandShort())/packet
+    packet_v1 = IP(dst=Config.addinsight_server_ipaddr, src = "172.16.1.1")/UDP(dport = Config.addinsight_server_port, sport = RandShort())/packet
     send(packet_v1, iface = "eth0")
